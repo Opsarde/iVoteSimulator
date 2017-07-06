@@ -1,5 +1,11 @@
 package iVoteSimulator;
 
+/**
+ * The Question interface.  It can have two types
+ * of question.
+ */
 public interface Question {
-    public boolean checkAnswer();
+    public int getType();
+    public void setQuestion(String words);
+    public String toString();
 }
