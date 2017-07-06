@@ -14,11 +14,6 @@ import java.util.Random;
  */
 public class SimulatorDriver {
     
-    /**
-     * configureQuestionType
-     * Purpose: Determine the question type for a question.
-     */
-    
     public static Student generateStudent() {
         Random rand = new Random();
         Student student = new Student(String.valueOf(rand.nextInt(1000000000)));
@@ -33,6 +28,8 @@ public class SimulatorDriver {
      * The driver hardcoded creation process. 
      */
     public static void main(String[] args) {
+        Random rand = new Random();
+        //SimulatorDriver driver = new SimulatorDriver();
         Question question1 = new MultiChoiceQuestion("iVoteSimulator tester.");
         IVoteService service = createService();
         service.configureQuestion(question1);
@@ -43,9 +40,17 @@ public class SimulatorDriver {
         for (int i = 0; i < 40; i++) {
             students.add(generateStudent());
         }
-        List<Boolean> randomChoice = service.getChoice();
+        List<Boolean> choices;
+        System.out.println(service.getAnswer());
         for (Student student : students) {
-            service.submitAnswer(student, randomChoice);
+            choices = service.getChoice();
+            System.out.println("why" + choices.size());
+            
+            // Random each choice
+            for (int i = 0; i < choices.size(); i++) {
+                choices.set(i, rand.nextBoolean());
+            }
+            service.submitAnswer(student, choices);
         }
         service.printResult();
         System.out.println("Hello");
