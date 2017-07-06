@@ -1,7 +1,6 @@
 package iVoteSimulator;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,7 @@ public class IVoteService {
     // Answer choices will be contained inside
     // IVoteService class. 
     private List<String> answers;
-    private Map<String, List<Boolean>> students;
+    private Map<String, boolean[]> students;
     
     public IVoteService() {
         question = null;
@@ -38,7 +37,7 @@ public class IVoteService {
      * submitAnswer:
      * Students can submit answer through this method.
      */
-    public void submitAnswer(Student student, List<Boolean> choice) {
+    public void submitAnswer(Student student, boolean[] choice) {
         boolean valid = checkAnswerValid(choice);
         if (valid)
             addStudentKey(student, choice);
@@ -50,8 +49,8 @@ public class IVoteService {
      * If the answer made by student is not valid, 
      * return false.
      */
-    private boolean checkAnswerValid(List<Boolean> choice) {
-        if (choice.size() != answers.size())
+    private boolean checkAnswerValid(boolean[] choice) {
+        if (choice.length != answers.size())
             return false;
         int choiceCount = 0;
         for (Boolean b : choice) {
@@ -71,7 +70,7 @@ public class IVoteService {
      * If the student exist, replace with the
      * last answer, else add the student and answer.
      */
-    private void addStudentKey(Student student, List<Boolean> choice) {
+    private void addStudentKey(Student student, boolean[] choice) {
         if (students.containsKey(student.getID())) {
             //replace previous answer submitted
             students.replace(student.getID(), choice);
@@ -85,18 +84,9 @@ public class IVoteService {
      * getChoice:
      * @return Possible choice to student.
      */
-    public List<Boolean> getChoice() {
+    public boolean[] getChoice() {
         //return answers;
-        System.out.println("What is size now: " + answers.size());
-        return new ArrayList<Boolean>(0);
-    }
-    
-    /**
-     * getAnswer:
-     * @return viewable answers to student.
-     */
-    public List<String> getAnswer() {
-        return answers;
+        return new boolean[answers.size()];
     }
 
     /**
@@ -104,17 +94,28 @@ public class IVoteService {
      * display the statistic.
      */
     public void printResult() {
+        System.out.println(question);
         // Show total number of submits for each answer
+        int[] totalcounts = calculateCounts();
+        for (int i = 0; i < totalcounts.length; i++) {
+            System.out.println(answers.get(i) + ": " + totalcounts[i]);
+        }
+    }
+
+    /**
+     * calculateCount:
+     * Count calculating process.
+     * @return counted array
+     */
+    private int[] calculateCounts() {
         int[] totalcounts = new int[answers.size()];
-        for (List<Boolean> answer : students.values()) {
-            for (int i = 0; i < answer.size(); i++) {
-                if (answer.get(i)) {
+        for (boolean[] answer : students.values()) {
+            for (int i = 0; i < answer.length; i++) {
+                if (answer[i]) {
                     totalcounts[i]++;
                 }
             }
         }
-        for (int i = 0; i < totalcounts.length; i++) {
-            System.out.println(answers.get(i) + ": " + totalcounts[i]);
-        }
+        return totalcounts;
     }
 }
